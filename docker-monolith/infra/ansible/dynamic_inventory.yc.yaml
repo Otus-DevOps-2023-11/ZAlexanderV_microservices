@@ -1,0 +1,6 @@
+plugin: yc_compute
+folders:
+  - b1gs4m14eth4n4rjck3k
+auth_kind: serviceaccountfile
+groups:
+  docker: labels['service'] == 'docker'

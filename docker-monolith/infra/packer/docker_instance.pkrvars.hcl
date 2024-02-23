@@ -1,0 +1,7 @@
+yc_catalog_id        = "b1gs4m14eth4n4rjck3k"
+svc_account_key_file = "/home/sterh/yandex_svc_key.json"
+src_image_family     = "ubuntu-2204-lts"
+yc_subnet_id         = "e9bgt4su1ihc5selb1pp"
+yc_zone              = "ru-central1-a"
+inst_cpu_num         = "4"
+inst_disk_size       = "20"
