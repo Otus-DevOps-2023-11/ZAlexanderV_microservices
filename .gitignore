@@ -1,0 +1,19 @@
+.vscode/*
+packer/variables.json
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+*.pkrvars.hcl
+*.lock.hcl
+.terraform/
+ansible/venv/
+*.retry
+#jdauphant.nginx
+# Vagrant & molecule
+.vagrant/
+*.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
