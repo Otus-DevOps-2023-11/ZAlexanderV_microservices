@@ -1,6 +1,0 @@
-REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
-ubuntu        latest    3db8720ecbf5   2 days ago     77.9MB
-hello-world   latest    d2c94e258dcb   9 months ago   13.3kB
-
-*
-Образ не имеет атрибутов для работы - сетевых настроек, переменных окружения, подключенных директорий, аппаратного слоя.
