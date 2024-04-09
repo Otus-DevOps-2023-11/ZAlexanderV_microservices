@@ -1,13 +1,17 @@
 variable "service_account_key_file" {
   description = "YC service acccount file json format"
+  type        = string
+  default     = null
 }
 
 variable "cloud_id" {
   description = "YC Cloud ID"
+  type        = string
+  default     = null
 }
 
 variable "folder_id" {
-  description = "Folder to create resource"
+  description = "YC Folder to create a resource"
   type        = string
   default     = null
 }
@@ -22,16 +26,20 @@ variable "zone" {
 }
 
 variable "public_key_path" {
-  # Описание переменной
   description = "Path to the public key used for ssh access"
+  type        = string
   default     = null
 }
 
 variable "private_key_path" {
-  # Описание переменной
   description = "Path to the private key used for ssh access"
+  type        = string
+  default     = null
 }
 
 variable "subnet_id" {
-  description = "Subnet"
+  description = "YC Subnet ID"
+  type        = string
+  default     = null
+
 }
