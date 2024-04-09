@@ -78,3 +78,59 @@ resource "yandex_compute_instance" "worker_node" {
   #   }
 
 }
+
+#Works, bad structure
+# module "inventory_production" {
+#   source  = "Peymanpn/ansible-inventory/local"
+#   version = "0.6.3"
+
+#   servers = {
+#     controller = [yandex_compute_instance.control_node1.network_interface.0.nat_ip_address]   # for a single server
+#     workers = yandex_compute_instance.worker_node.*.network_interface.0.nat_ip_address   # for a list of managers
+#   }
+
+#   global_vars = {
+#     operating_system        = "debian"
+#     ansible_user            = "clouduser"
+#     ansible_ssh_private_key_file = "~/otus/yc_key_priv"
+
+#   }
+
+#   servers_labels = { # generates json encoded labels
+#   }
+
+#   output  = "example_hosts.ini"
+# }
+
+module "ansible_inv" {
+  source  = "mschuchard/ansible-inv/local"
+  version = "~> 1.2.0"
+  formats = ["yaml"]
+  #instances = yandex_compute_instance.control_node1.network_interface.0.nat_ip_address
+
+  instances = {
+    "controllers" = {
+      children = []
+      hosts = [
+        {
+          name = yandex_compute_instance.control_node1.name
+          ip   = yandex_compute_instance.control_node1.network_interface.0.nat_ip_address
+          vars = { "ansible_user" = "clouduser", "ansible_ssh_private_key_file" = "~/otus/yc_key_priv" }
+        }
+      ]
+    },
+    "workers" = {
+      children = []
+      hosts = [
+        for worker in(yandex_compute_instance.worker_node)[*] :
+        {
+          "name" : worker.name
+          "ip" : worker.network_interface.0.nat_ip_address
+          "vars" : { "ansible_user" = "clouduser", "ansible_ssh_private_key_file" = "~/otus/yc_key_priv" }
+        }
+      ]
+    }
+  }
+
+
+}
