@@ -1,80 +1,110 @@
-resource "yandex_compute_instance" "control_node1" {
-  name = "control-node-1"
-  zone = var.zone
+resource "yandex_kubernetes_cluster" "zonal_cluster_reddit" {
+  name        = "reddit-app"
+  description = "Reddit app cluster"
+  network_id  = data.yandex_vpc_network.default.id # "enpm3j82hr16pfrck0v8"
+  master {
+    version = "1.29"
+    zonal {
+      zone      = var.zone
+      subnet_id = var.subnet_id
+    }
 
-  resources {
-    cores  = 4
-    memory = 4
-  }
+    public_ip = true
 
-  boot_disk {
-    initialize_params {
-      name = "k8s-cluster-disk"
-      image_id = data.yandex_compute_image.debian_latest.id
-      size = 40
+    maintenance_policy {
+      auto_upgrade = true
+
+      maintenance_window {
+        start_time = "02:00"
+        duration   = "2h"
+      }
+    }
+
+    master_logging {
+      enabled                    = true
+      kube_apiserver_enabled     = true
+      cluster_autoscaler_enabled = true
+      events_enabled             = true
+      audit_enabled              = true
     }
   }
 
-  network_interface {
-    # Указан id подсети default-ru-central1-a
-    subnet_id = data.yandex_vpc_subnet.default_a.id
-    nat       = true
+  service_account_id      = data.yandex_iam_service_account.k8s_master.id
+  node_service_account_id = data.yandex_iam_service_account.k8s_worker.id
+
+  labels = {
+    application = "reddit"
+    environment = "dev"
   }
 
-  metadata = {
-    ssh-keys = "ubuntu:${file("/home/sterh/otus/yc_key_pub")}"
-    user-data = templatefile("templates/cloud_init.cfg",
-      {
-        hostname = "master1",
-        pubkey     = "${file("/home/sterh/otus/yc_key_pub")}"
-      }
-
-    )
-    serial-port-enable = 1
-  }
-
-#   scheduling_policy {
-#     preemptible = true
-#   }
-
+  release_channel         = "RAPID"
+  network_policy_provider = "CALICO"
 }
 
-resource "yandex_compute_instance" "worker_node" {
-  count = 2
-  name = "worker-node-${count.index}"
-  zone = var.zone
+resource "yandex_kubernetes_node_group" "reddit_node_group" {
+  cluster_id  = yandex_kubernetes_cluster.zonal_cluster_reddit.id
+  name        = "work-node"
+  description = "description"
+  version     = "1.29"
 
-  resources {
-    cores  = 4
-    memory = 4
+  labels = {
+    "application" = "reddit"
+    "environment" = "dev"
   }
 
-  boot_disk {
-    initialize_params {
-      image_id = data.yandex_compute_image.debian_latest.id
-      size = 40
+  instance_template {
+    platform_id = "standard-v2"
+
+    network_interface {
+      nat        = true
+      subnet_ids = [var.subnet_id]
+    }
+
+    resources {
+      memory = 2
+      cores  = 2
+    }
+
+    boot_disk {
+      type = "network-hdd"
+      size = 64
+    }
+
+    scheduling_policy {
+      preemptible = true
+    }
+
+    container_runtime {
+      type = "containerd"
     }
   }
 
-  network_interface {
-    # Указан id подсети default-ru-central1-a
-    subnet_id = data.yandex_vpc_subnet.default_a.id
-    nat       = true
+  scale_policy {
+    fixed_scale {
+      size = 1
+    }
   }
 
-  metadata = {
-    user-data = templatefile("templates/cloud_init.cfg",
-      {
-        hostname = "worker-node-${count.index}",
-        pubkey     = "${file("/home/sterh/otus/yc_key_pub")}"
-      }
-
-    )
-    serial-port-enable = 1
+  allocation_policy {
+    location {
+      zone = var.zone
+    }
   }
 
-#   scheduling_policy {
-#     preemptible = true
-#   }
+  maintenance_policy {
+    auto_upgrade = true
+    auto_repair  = true
 
+    maintenance_window {
+      day        = "monday"
+      start_time = "03:00"
+      duration   = "3h"
+    }
+
+    maintenance_window {
+      day        = "friday"
+      start_time = "23:00"
+      duration   = "4h30m"
+    }
+  }
 }
