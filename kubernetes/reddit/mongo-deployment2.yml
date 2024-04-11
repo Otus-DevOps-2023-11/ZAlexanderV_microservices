@@ -13,12 +13,14 @@ spec:
     matchLabels:
       app: reddit
       component: mongo
+      comment-db: "true"
   template:
     metadata:
       name: mongo
       labels:
         app: reddit
         component: mongo
+        comment-db: "true"
     spec:
       containers:
       - image: mongo:3.2
