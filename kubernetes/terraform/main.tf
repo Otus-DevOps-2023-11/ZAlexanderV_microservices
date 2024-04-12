@@ -3,7 +3,7 @@ resource "yandex_kubernetes_cluster" "zonal_cluster_reddit" {
   description = "Reddit app cluster"
   network_id  = data.yandex_vpc_network.default.id # "enpm3j82hr16pfrck0v8"
   master {
-    version = "1.29"
+    version = "1.26"
     zonal {
       zone      = var.zone
       subnet_id = var.subnet_id
@@ -45,7 +45,7 @@ resource "yandex_kubernetes_node_group" "reddit_node_group" {
   cluster_id  = yandex_kubernetes_cluster.zonal_cluster_reddit.id
   name        = "work-node"
   description = "description"
-  version     = "1.29"
+  version     = "1.26"
 
   labels = {
     "application" = "reddit"
@@ -61,7 +61,7 @@ resource "yandex_kubernetes_node_group" "reddit_node_group" {
     }
 
     resources {
-      memory = 2
+      memory = 4
       cores  = 2
     }
 

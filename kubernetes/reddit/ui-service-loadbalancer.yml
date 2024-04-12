@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-lb
+  labels:
+    app: reddit
+    component: ui
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80 # LB port
+    protocol: TCP
+    targetPort: 9292 #POD port
+  selector:
+    app: reddit
+    component: ui
