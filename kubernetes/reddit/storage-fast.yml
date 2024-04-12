@@ -3,6 +3,7 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1beta1
 metadata:
   name: fast
-provisioner: kubernetes.io/gce-pd
+provisioner: disk-csi-driver.mks.ycloud.io
 parameters:
-  type: pd-ssd
+  type: yc-network-ssd-io-m3
+  csi.storage.k8s.io/fstype: ext4
