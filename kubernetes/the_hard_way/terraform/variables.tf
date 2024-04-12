@@ -1,13 +1,9 @@
 variable "service_account_key_file" {
   description = "YC service acccount file json format"
-  type        = string
-  default     = null
 }
 
 variable "cloud_id" {
   description = "YC Cloud ID"
-  type        = string
-  default     = null
 }
 
 variable "folder_id" {
@@ -26,31 +22,16 @@ variable "zone" {
 }
 
 variable "public_key_path" {
+  # Описание переменной
   description = "Path to the public key used for ssh access"
-  type        = string
   default     = null
 }
 
 variable "private_key_path" {
+  # Описание переменной
   description = "Path to the private key used for ssh access"
-  type        = string
-  default     = null
 }
 
 variable "subnet_id" {
-  description = "YC Subnet ID"
-  type        = string
-  default     = null
-}
-
-variable "k8s_svc_account" {
-  description = "YC K8s service account"
-  type        = string
-  default     = null
-}
-
-variable "k8s_worker_svc_account" {
-  description = "YC K8s service account"
-  type        = string
-  default     = null
+  description = "Subnet"
 }

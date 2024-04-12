@@ -1,17 +1,18 @@
+---
 apiVersion: apps/v1
 kind: Deployment
-metadata: # Блок метаданных деплоя
+metadata:
   name: ui
   labels:
     app: reddit
     component: ui
-spec: # Блок спецификации деплоя
+spec:
   replicas: 3
   selector:
     matchLabels:
       app: reddit
       component: ui
-  template: # Блок описания POD-ов
+  template:
     metadata:
       name: ui-pod
       labels:
@@ -19,8 +20,10 @@ spec: # Блок спецификации деплоя
         component: ui
     spec:
       containers:
-      - image: chromko/ui # Не забудьте подставить свой образ
+      - image: chromko/ui
         name: ui
         env:
-        - name: COMMENT_DATABASE_HOST
-          value: comment-db
+        - name: ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace

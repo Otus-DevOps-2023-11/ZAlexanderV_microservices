@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+  labels:
+    app: zipkin
+    component: debug
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zipkin
+      component: debug
+  template:
+    metadata:
+      name: zipkin
+      labels:
+        app: zipkin
+        component: debug
+    spec:
+      containers:
+      - image: openzipkin/zipkin
+        name: zipkin
