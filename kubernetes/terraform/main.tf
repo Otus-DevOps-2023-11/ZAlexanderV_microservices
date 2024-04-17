@@ -39,6 +39,11 @@ resource "yandex_kubernetes_cluster" "zonal_cluster_reddit" {
 
   release_channel         = "RAPID"
   network_policy_provider = "CALICO"
+
+  provisioner "local-exec" {
+    command = "yc managed-kubernetes cluster get-credentials reddit-app --external --force"
+  }
+
 }
 
 resource "yandex_kubernetes_node_group" "reddit_node_group" {

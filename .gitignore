@@ -17,3 +17,5 @@ ansible/venv/
 .molecule
 .cache
 .pytest_cache
+*.key
+*.crt
